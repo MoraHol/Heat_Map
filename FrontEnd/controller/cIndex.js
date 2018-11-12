@@ -1,47 +1,19 @@
-window.onload = function () {
-
-};
 var map;
 var heatmap;
 var marker;
-var contentAsk = '<table><tr><td>Health:</td><td><form><p class="clasificacion"><input id="radio1" type="radio" name="estrellas" value="5"><!--' +
-    '--><label for="radio1">★</label><!--' +
-    '--><input id="radio2" type="radio" name="estrellas" value="4"><!--' +
-    '--><label for="radio2">★</label><!--' +
-    '--><input id="radio3" type="radio" name="estrellas" value="3"><!--' +
-    '--><label for="radio3">★</label><!--' +
-    '--><input id="radio4" type="radio" name="estrellas" value="2"><!--' +
-    '--><label for="radio4">★</label><!--' +
-    '--><input id="radio5" type="radio" name="estrellas" value="1"><!--' +
-    '--><label for="radio5">★</label></p></form></td></tr><tr><td>security:</td><td><form><p class="clasificacion"><input id="radio1" type="radio" name="estrellas" value="5"><!--' +
-    '--><label for="radio1">★</label><!--' +
-    '--><input id="radio2" type="radio" name="estrellas" value="4"><!--' +
-    '--><label for="radio2">★</label><!--' +
-    '--><input id="radio3" type="radio" name="estrellas" value="3"><!--' +
-    '--><label for="radio3">★</label><!--' +
-    '--><input id="radio4" type="radio" name="estrellas" value="2"><!--' +
-    '--><label for="radio4">★</label><!--' +
-    '--><input id="radio5" type="radio" name="estrellas" value="1"><!--'+
-'--><label for="radio5">★</label></p></form></td></tr><tr><td>Ambient:</td><td><form><p class="clasificacion"><input id="radio1" type="radio" name="estrellas" value="5"><!--' +
-'--><label for="radio1">★</label><!--' +
-'--><input id="radio2" type="radio" name="estrellas" value="4"><!--' +
-'--><label for="radio2">★</label><!--' +
-'--><input id="radio3" type="radio" name="estrellas" value="3"><!--' +
-'--><label for="radio3">★</label><!--' +
-'--><input id="radio4" type="radio" name="estrellas" value="2"><!--' +
-'--><label for="radio4">★</label><!--' +
-'--><input id="radio5" type="radio" name="estrellas" value="1"><!--' +
-'--><label for="radio5">★</label></p></form></td></tr><tr><td></td><td><input type="button" value="Save" onclick="saveData()"></td></tr></table>';
 
+/**
+ * funcion para inicializar el mapa con todos sus componentes
+ */
 function initMap() {
-    // don't forget to add gmaps-heatmap.js
+    // creacion de una coordenada
     var myLatlng = new google.maps.LatLng(4.641578, -74.154355);
-    // map options,
+    // opciones del mapa,
     var myOptions = {
         zoom: 15,
         center: myLatlng
     };
-    // standard map
+    // instacia de mapa de google
     map = new google.maps.Map(document.getElementById("map"), myOptions);
 
     // -------------------------------------------------------
@@ -49,7 +21,7 @@ function initMap() {
     // -------------------------------------------------------
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
-            doStuff(position.coords.latitude, position.coords.longitude);
+            putPoint(position.coords.latitude, position.coords.longitude);
         });
     }
 
@@ -79,8 +51,16 @@ function initMap() {
             infowindow.open(map, marker);
         });
     });
-    // -------------------------------------------------------------
+    //añadir mapa de calor
+    addHeatMapLayer(map);
+}
 
+/**
+ * agregar el mapa de calor a un mapa
+ * 
+ * @param {*} map mapa al cual se va a añadir el mapa de calor
+ */
+function addHeatMapLayer(map) {
     // heatmap layer
     heatmap = new HeatmapOverlay(map, {
         // radius should be small ONLY if scaleRadius is true (or small radius is intended)
@@ -99,8 +79,7 @@ function initMap() {
         // which field name in your data represents the data value - default "value"
         valueField: 'count'
     });
-
-
+    //datos de prueba a mostrar
     var testData = {
         max: 8,
         data: [{
@@ -121,17 +100,30 @@ function initMap() {
     };
     heatmap.setData(testData);
 }
-
-function doStuff(mylat, mylong) {
-    var circle = new google.maps.Circle({
-        center: new google.maps.LatLng(mylat, mylong),
-        fillcolor: 'blue',
-        fillOpacity: 0.7,
-        radius: 20,
+/**
+ * pintar el punto de localizacion del usuario
+ * @param {*} mylat latitud donde se va a pintar punto de localizacion
+ * @param {*} mylong longitud donde se va a pintar punto de localizacion
+ */
+function putPoint(mylat, mylong) {
+    //crear una coordena
+    var myPosition = new google.maps.LatLng(mylat, mylong);
+    //crear simbolo de circulo para mostar en mapa
+    var locationSimbol = {
+        fillColor: '#4285F4',
+        path: google.maps.SymbolPath.CIRCLE,
+        strokeColor: "white",
+        scale: 5,
+        fillOpacity: 1,
+        strokeWeight: 1
+    };
+    //marcador para pintar la localizacion
+    var marker = new google.maps.Marker({
+        position: myPosition,
         map: map,
-        clickable: false,
-        strokeColor: 'white',
-        strokeOpacity: 0.6
+        icon: locationSimbol
     });
+}
+function focusLocation(map){
 
 }
