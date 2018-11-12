@@ -19,11 +19,7 @@ function initMap() {
     // -------------------------------------------------------
     // pintar geolocalizacion
     // -------------------------------------------------------
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            putPoint(position.coords.latitude, position.coords.longitude);
-        });
-    }
+    focusLocation(map);
 
 
     // -----------------------------------------------------------
@@ -105,9 +101,7 @@ function addHeatMapLayer(map) {
  * @param {*} mylat latitud donde se va a pintar punto de localizacion
  * @param {*} mylong longitud donde se va a pintar punto de localizacion
  */
-function putPoint(mylat, mylong) {
-    //crear una coordena
-    var myPosition = new google.maps.LatLng(mylat, mylong);
+function paintPoint(myPosition, map) {
     //crear simbolo de circulo para mostar en mapa
     var locationSimbol = {
         fillColor: '#4285F4',
@@ -124,6 +118,20 @@ function putPoint(mylat, mylong) {
         icon: locationSimbol
     });
 }
-function focusLocation(map){
-
+/**
+ * actualiza la posicion del mapa al punto de localizacion
+ * @param {*} map mapa el cual se vera afectado
+ */
+function focusLocation(map) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            //crear una coordena
+            var myPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            //pintar punto
+            paintPoint(myPosition, map);
+            //reestablecer el centro y el zoom en localizacion 
+            map.setCenter(myPosition);
+            map.setZoom(15);
+        });
+    }
 }
