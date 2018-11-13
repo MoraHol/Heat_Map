@@ -22,6 +22,8 @@ class WelfareIndicator extends Model
      */
     public function coordinates()
     {
-        return $this->belongsToMany('App\Coordinate')->withTimestamps();
+        return $this->belongsToMany('App\Coordinate')->using('App\CoordinateWelfareIndicator')
+            ->withTimestamps()
+            ->withPivot('score');
     }
 }

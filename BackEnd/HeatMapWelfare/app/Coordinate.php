@@ -23,6 +23,8 @@ class Coordinate extends Model
      */
     public function indicators()
     {
-        return $this->BelongsToMany('App\WelfareIndicator')->withTimestamps();
+        return $this->BelongsToMany('App\WelfareIndicator')->using('App\CoordinateWelfareIndicator')
+            ->withTimestamps()
+            ->withPivot('score');
     }
 }
