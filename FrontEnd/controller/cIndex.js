@@ -54,17 +54,21 @@ function initMap() {
     // Create the DIV to hold the control and call the CenterControl()
     // constructor passing in this DIV.
     var centerControlDiv = document.createElement('div');
-    var centerControl = new CenterControl(map, 'Center Map');
-
-    centerControlDiv.index = 1;
+    var centerControl = new CenterControl(centerControlDiv, map, 'Center Map');
+     centerControlDiv.index = 1;
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(centerControlDiv);
     var controlHealthDiv = document.createElement('div');
-    var controlHealth = new CenterControl(map, 'Health');
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlHealth.controlDiv);
-    var controlSecurity = new CenterControl(map, 'Security');
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlSecurity.controlDiv);
-    var controlAmbient = new CenterControl(map, 'Ambient');
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlAmbient.controlDiv);
+    var controlHealth = new CenterControl(controlHealthDiv, map, 'Health');
+    controlHealthDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlHealthDiv);
+    var controlSecurityDiv= document.createElement('div');
+    var controlSecurity = new CenterControl(controlSecurityDiv, map, 'Security');
+    controlSecurityDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlSecurityDiv);
+    var controlAmbientDiv= document.createElement('div');
+    var controlAmbient = new CenterControl(controlAmbientDiv, map, 'Ambient');
+    controlAmbientDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlAmbientDiv);
 
 
 }
@@ -157,8 +161,7 @@ function focusLocation(map) {
     }
 }
 
-function CenterControl(map, text) {
-    controlDiv = document.createElement('div');
+function CenterControl(controlDiv, map, text) {
     // Set CSS for the control border
     var controlUI = document.createElement('div');
     controlUI.style.backgroundColor = '#fff';
@@ -168,7 +171,6 @@ function CenterControl(map, text) {
     controlUI.style.textAlign = 'center';
     controlUI.title = 'Click to recenter the map';
     controlDiv.appendChild(controlUI);
-
     // Set CSS for the control interior
     var controlText = document.createElement('div');
     controlText.style.color = 'rgb(25,25,25)';
@@ -179,10 +181,8 @@ function CenterControl(map, text) {
     controlText.style.paddingRight = '5px';
     controlText.innerHTML = text;
     controlUI.appendChild(controlText);
-
     //setup the click event listener: simply set the map on location
     controlUI.addEventListener('click', function () {
         focusLocation(map);
     });
-    controlDiv.appendChild(controlUI);
 }
