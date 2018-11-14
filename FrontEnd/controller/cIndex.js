@@ -1,6 +1,7 @@
 var map;
 var heatmap;
 var marker;
+var locationMarker;
 
 /**
  * funcion para inicializar el mapa con todos sus componentes
@@ -133,8 +134,11 @@ function paintPoint(myPosition, map) {
         fillOpacity: 1,
         strokeWeight: 1
     };
+    if (locationMarker != null) {
+        locationMarker.setMap(null);
+    }
     //marcador para pintar la localizacion
-    var marker = new google.maps.Marker({
+    locationMarker = new google.maps.Marker({
         position: myPosition,
         map: map,
         icon: locationSimbol
