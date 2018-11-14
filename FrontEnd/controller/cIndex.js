@@ -49,11 +49,33 @@ function initMap() {
     });
     //añadir mapa de calor
     addHeatMapLayer(map);
+    //añadir el boton de localizacion
+    // Create the DIV to hold the control and call the CenterControl()
+    // constructor passing in this DIV.
+    var centerControlDiv = document.createElement('div');
+    var centerControl = new CenterControl(centerControlDiv, map, 'Center Map');
+
+    centerControlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(centerControlDiv);
+    var controlHealthDiv = document.createElement('div');
+    var controlHealth = new CenterControl(controlHealthDiv, map, 'Health');
+    controlHealthDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlHealthDiv);
+    var controlSecurityDiv= document.createElement('div');
+    var controlSecurity = new CenterControl(controlSecurityDiv, map, 'Security');
+    controlSecurityDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlSecurityDiv);
+    var controlAmbientDiv= document.createElement('div');
+    var controlAmbient = new CenterControl(controlAmbientDiv, map, 'Ambient');
+    controlAmbientDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlAmbientDiv);
+
+
 }
 
 /**
  * agregar el mapa de calor a un mapa
- * 
+ *
  * @param {*} map mapa al cual se va a añadir el mapa de calor
  */
 function addHeatMapLayer(map) {
@@ -129,9 +151,38 @@ function focusLocation(map) {
             var myPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             //pintar punto
             paintPoint(myPosition, map);
-            //reestablecer el centro y el zoom en localizacion 
+            //reestablecer el centro y el zoom en localizacion
             map.setCenter(myPosition);
             map.setZoom(15);
         });
     }
+}
+
+function CenterControl(controlDiv, map, text) {
+
+    // Set CSS for the control border
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#fff';
+    controlUI.style.border = '2px solid #fff';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.marginBottom = '22px';
+    controlUI.style.textAlign = 'center';
+    controlUI.title = 'Click to recenter the map';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior
+    var controlText = document.createElement('div');
+    controlText.style.color = 'rgb(25,25,25)';
+    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+    controlText.style.fontSize = '16px';
+    controlText.style.lineHeight = '38px';
+    controlText.style.paddingLeft = '5px';
+    controlText.style.paddingRight = '5px';
+    controlText.innerHTML = text;
+    controlUI.appendChild(controlText);
+
+    //setup the click event listener: simply set the map on location
+    controlUI.addEventListener('click', function () {
+        focusLocation(map);
+    });
 }
