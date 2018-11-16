@@ -38,12 +38,12 @@ function initMap() {
         marker = new google.maps.Marker({
             position: event.latLng,
             map: map
-        })
+        });
         console.log(map);
-
 
         google.maps.event.addListener(marker, 'click', function () {
             infowindow.open(map, marker);
+            coordinate = marker.getPosition();
         });
     });
     // -----------------------------------------------------------
@@ -164,11 +164,36 @@ function focusLocation(map) {
     }
 }
 
-function getData() {
-    var divtest = document.getElementById('divTest');
-    var healthRate = getRadioButtonSelectedValue(document.formHealth.health_star);
-    var securityRate = getRadioButtonSelectedValue(document.formSecurity.security_star);
-    var ambientRate = getRadioButtonSelectedValue(document.formAmbient.ambient_star);
+function saveData() {
+    ratingIndicators = getIndicatorsRating();
+    indicator = ['health', 'security', 'ambient'];
+    count = 0;
+    for (var key in ratingIndicators) {
+        if (ratingIndicators.hasOwnProperty(key)) {
+            saveDataIndicator(indicator[count],ratingIndicators[key]);
+            count++;
+        }
+    }
+}
+
+function saveDataIndicator(indicator, rate) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("divTest").innerHTML = 'sucess'; //this.responseText;
+        }
+    };
+    xhttp.open("GET", "http://" + server + "/Heat_Map_Welfare/BackEnd/HeatMapWelfare/public/addCoordinate/lat=" + coordinate.lat() + "/lng=" + coordinate.lng() + "/indicator=" + indicator + "/score=" + rate, true);
+    xhttp.send();
+}
+
+function getIndicatorsRating() {
+    var ratingIndicators = {
+        'healthRate': getRadioButtonSelectedValue(document.formHealth.health_star),
+        'securityRate': getRadioButtonSelectedValue(document.formSecurity.security_star),
+        'ambientRate': getRadioButtonSelectedValue(document.formAmbient.ambient_star)
+    };
+    return ratingIndicators;
 }
 
 function getRadioButtonSelectedValue(ctrl) {

@@ -25,8 +25,10 @@ var contentAsk = '<table><tr><td>Health:</td><td><form name="formHealth"><p clas
 '--><input id="radio14" type="radio" name="ambient_star" value="2"><!--' +
 '--><label for="radio14">★</label><!--' +
 '--><input id="radio15" type="radio" name="ambient_star" value="1"><!--' +
-'--><label for="radio15">★</label></p></form></td></tr><tr><td></td><td><input type="button" value="Save" onclick="getData()"></td></tr></table>';
+'--><label for="radio15">★</label></p></form></td></tr><tr><td></td><td><input type="button" value="Save" onclick="saveData()"></td></tr></table>';
 var map;
 var heatmap;
 var marker;
 var locationMarker;
+var server = 'localhost';
+var coordinate;
