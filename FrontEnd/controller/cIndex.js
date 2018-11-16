@@ -63,16 +63,24 @@ function initMap() {
     var controlHealthDiv = document.createElement('div');
     var controlHealth = new CustomControl(controlHealthDiv, map, 'Health');
     controlHealthDiv.index = 1;
+    controlHealthDiv.addEventListener('click', function () {
+        getValues('health');
+    });
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlHealthDiv);
     var controlSecurityDiv = document.createElement('div');
     var controlSecurity = new CustomControl(controlSecurityDiv, map, 'Security');
     controlSecurityDiv.index = 1;
+    controlSecurityDiv.addEventListener('click', function () {
+        getValues('security');
+    });
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlSecurityDiv);
     var controlAmbientDiv = document.createElement('div');
     var controlAmbient = new CustomControl(controlAmbientDiv, map, 'Ambient');
     controlAmbientDiv.index = 1;
+    controlAmbientDiv.addEventListener('click', function () {
+        getValues('ambient');
+    });
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlAmbientDiv);
-
 
 }
 
@@ -166,11 +174,10 @@ function focusLocation(map) {
 
 function saveData() {
     ratingIndicators = getIndicatorsRating();
-    indicator = ['health', 'security', 'ambient'];
     count = 0;
     for (var key in ratingIndicators) {
         if (ratingIndicators.hasOwnProperty(key)) {
-            saveDataIndicator(indicator[count],ratingIndicators[key]);
+            saveDataIndicator(indicators[count], ratingIndicators[key]);
             count++;
         }
     }
@@ -189,9 +196,9 @@ function saveDataIndicator(indicator, rate) {
 
 function getIndicatorsRating() {
     var ratingIndicators = {
-        'healthRate': getRadioButtonSelectedValue(document.formHealth.health_star),
-        'securityRate': getRadioButtonSelectedValue(document.formSecurity.security_star),
-        'ambientRate': getRadioButtonSelectedValue(document.formAmbient.ambient_star)
+        'healthRate': getRadioButtonSelectedValue(document.formHealth.health_star) * 20,
+        'securityRate': getRadioButtonSelectedValue(document.formSecurity.security_star) * 20,
+        'ambientRate': getRadioButtonSelectedValue(document.formAmbient.ambient_star) * 20
     };
     return ratingIndicators;
 }
@@ -199,4 +206,37 @@ function getIndicatorsRating() {
 function getRadioButtonSelectedValue(ctrl) {
     for (i = 0; i < ctrl.length; i++)
         if (ctrl[i].checked) return ctrl[i].value;
+}
+
+function getValues(indicator) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            setDataHeatMap(JSON.parse(this.responseText));
+        }
+    };
+    xhttp.open("GET", "http://" + server + "/Heat_Map_Welfare/BackEnd/HeatMapWelfare/public/getIndicators/" + indicator + "/true", true);
+    xhttp.send();
+}
+
+function setDataHeatMap(dataJson) {
+    var dataHeatMap = {
+        max: 100,
+        data: []
+    };
+    console.log(dataJson);
+    for (const key in dataJson) {
+        if (dataJson.hasOwnProperty(key)) {
+            dataHeatMap.data.push(extractCoordinate(dataJson[key]));
+        }
+    }
+    heatmap.setData(dataHeatMap);
+}
+
+function extractCoordinate(coordinate) {
+    return {
+        lat: coordinate.lat,
+        lng: coordinate.lng,
+        count: coordinate.pivot.score
+    };
 }
