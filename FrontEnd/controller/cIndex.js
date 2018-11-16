@@ -1,30 +1,26 @@
-var map;
-var heatmap;
-var marker;
-var locationMarker;
-
 /**
  * funcion para inicializar el mapa con todos sus componentes
  */
 function initMap() {
-    // creacion de una coordenada
+    // creation of a coordinate
     var myLatlng = new google.maps.LatLng(4.641578, -74.154355);
-    // opciones del mapa,
+    // map options,
     var myOptions = {
         zoom: 15,
         center: myLatlng
     };
-    // instacia de mapa de google
+    // google map instace
     map = new google.maps.Map(document.getElementById("map"), myOptions);
 
     // -------------------------------------------------------
-    // pintar geolocalizacion
+    // paint geolocation
     // -------------------------------------------------------
     focusLocation(map);
-
-
     // -----------------------------------------------------------
 
+    // -----------------------------------------------------------
+    // creation of punctuation window
+    // -----------------------------------------------------------
     var infowindow = new google.maps.InfoWindow({
         content: contentAsk
     });
@@ -32,7 +28,9 @@ function initMap() {
     var messagewindow = new google.maps.InfoWindow({
         content: document.getElementById('message')
     });
-
+    // -----------------------------------------------------------
+    // add event at punctuation window
+    // -----------------------------------------------------------
     google.maps.event.addListener(map, 'click', function (event) {
         if (marker != null) {
             marker.setMap(null);
@@ -48,25 +46,30 @@ function initMap() {
             infowindow.open(map, marker);
         });
     });
-    //añadir mapa de calor
+    // -----------------------------------------------------------
+    // add heat map
+    // -----------------------------------------------------------
     addHeatMapLayer(map);
-    //añadir el boton de localizacion
-    // Create the DIV to hold the control and call the CenterControl()
+    // -----------------------------------------------------------
+    // add button of geolocation
+    // -----------------------------------------------------------
+
+    // Create the DIV to hold the control and call the CustomControl()
     // constructor passing in this DIV.
-    var centerControlDiv = document.createElement('div');
-    var centerControl = new CenterControl(centerControlDiv, map, 'Center Map');
-     centerControlDiv.index = 1;
-    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(centerControlDiv);
+    var customControlDiv = document.createElement('div');
+    var customControl = new CustomControl(customControlDiv, map, 'Center Map');
+    customControlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(customControlDiv);
     var controlHealthDiv = document.createElement('div');
-    var controlHealth = new CenterControl(controlHealthDiv, map, 'Health');
+    var controlHealth = new CustomControl(controlHealthDiv, map, 'Health');
     controlHealthDiv.index = 1;
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlHealthDiv);
-    var controlSecurityDiv= document.createElement('div');
-    var controlSecurity = new CenterControl(controlSecurityDiv, map, 'Security');
+    var controlSecurityDiv = document.createElement('div');
+    var controlSecurity = new CustomControl(controlSecurityDiv, map, 'Security');
     controlSecurityDiv.index = 1;
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlSecurityDiv);
-    var controlAmbientDiv= document.createElement('div');
-    var controlAmbient = new CenterControl(controlAmbientDiv, map, 'Ambient');
+    var controlAmbientDiv = document.createElement('div');
+    var controlAmbient = new CustomControl(controlAmbientDiv, map, 'Ambient');
     controlAmbientDiv.index = 1;
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlAmbientDiv);
 
@@ -74,9 +77,9 @@ function initMap() {
 }
 
 /**
- * agregar el mapa de calor a un mapa
+ * add heat map to a map
  *
- * @param {*} map mapa al cual se va a añadir el mapa de calor
+ * @param {*} map map to which the heat map will be added
  */
 function addHeatMapLayer(map) {
     // heatmap layer
@@ -97,7 +100,7 @@ function addHeatMapLayer(map) {
         // which field name in your data represents the data value - default "value"
         valueField: 'count'
     });
-    //datos de prueba a mostrar
+    // test data
     var testData = {
         max: 8,
         data: [{
@@ -119,12 +122,12 @@ function addHeatMapLayer(map) {
     heatmap.setData(testData);
 }
 /**
- * pintar el punto de localizacion del usuario
- * @param {*} mylat latitud donde se va a pintar punto de localizacion
- * @param {*} mylong longitud donde se va a pintar punto de localizacion
+ * paint the user's location point
+ * @param {*} myPosition user's position
+ * @param {*} map map to which the point will be added
  */
 function paintPoint(myPosition, map) {
-    //crear simbolo de circulo para mostar en mapa
+    //create circle symbol to show on map
     var locationSimbol = {
         fillColor: '#4285F4',
         path: google.maps.SymbolPath.CIRCLE,
@@ -136,7 +139,7 @@ function paintPoint(myPosition, map) {
     if (locationMarker != null) {
         locationMarker.setMap(null);
     }
-    //marcador para pintar la localizacion
+    // marker to paint the location
     locationMarker = new google.maps.Marker({
         position: myPosition,
         map: map,
@@ -144,8 +147,8 @@ function paintPoint(myPosition, map) {
     });
 }
 /**
- * actualiza la posicion del mapa al punto de localizacion
- * @param {*} map mapa el cual se vera afectado
+ * updates the position of the map to the location point
+ * @param {*} map map which will be updated
  */
 function focusLocation(map) {
     if (navigator.geolocation) {
@@ -161,28 +164,14 @@ function focusLocation(map) {
     }
 }
 
-function CenterControl(controlDiv, map, text) {
-    // Set CSS for the control border
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#fff';
-    controlUI.style.border = '2px solid #fff';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'center';
-    controlUI.title = 'Click to recenter the map';
-    controlDiv.appendChild(controlUI);
-    // Set CSS for the control interior
-    var controlText = document.createElement('div');
-    controlText.style.color = 'rgb(25,25,25)';
-    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    controlText.style.fontSize = '16px';
-    controlText.style.lineHeight = '38px';
-    controlText.style.paddingLeft = '5px';
-    controlText.style.paddingRight = '5px';
-    controlText.innerHTML = text;
-    controlUI.appendChild(controlText);
-    //setup the click event listener: simply set the map on location
-    controlUI.addEventListener('click', function () {
-        focusLocation(map);
-    });
+function getData() {
+    var divtest = document.getElementById('divTest');
+    var healthRate = getRadioButtonSelectedValue(document.formHealth.health_star);
+    var securityRate = getRadioButtonSelectedValue(document.formSecurity.security_star);
+    var ambientRate = getRadioButtonSelectedValue(document.formAmbient.ambient_star);
+}
+
+function getRadioButtonSelectedValue(ctrl) {
+    for (i = 0; i < ctrl.length; i++)
+        if (ctrl[i].checked) return ctrl[i].value;
 }
