@@ -172,7 +172,7 @@ function saveDataIndicator(indicator, rate) {
             document.getElementById("divTest").innerHTML = 'sucess'; //this.responseText;
         }
     };
-    xhttp.open("GET", "http://" + server + "/Heat_Map_Welfare/BackEnd/HeatMapWelfare/public/addCoordinate/lat=" + coordinate.lat() + "/lng=" + coordinate.lng() + "/indicator=" + indicator + "/score=" + rate, true);
+    xhttp.open("GET", "https://" + server + "/Heat_Map_Welfare/BackEnd/HeatMapWelfare/public/addCoordinate/lat=" + coordinate.lat() + "/lng=" + coordinate.lng() + "/indicator=" + indicator + "/score=" + rate, true);
     xhttp.send();
 }
 
@@ -197,7 +197,7 @@ function getValues(indicator) {
             setDataHeatMap(JSON.parse(this.responseText));
         }
     };
-    xhttp.open("GET", "http://" + server + "/Heat_Map_Welfare/BackEnd/HeatMapWelfare/public/getIndicators/" + indicator + "/true", true);
+    xhttp.open("GET", "https://" + server + "/Heat_Map_Welfare/BackEnd/HeatMapWelfare/public/getIndicators/" + indicator + "/true", true);
     xhttp.send();
 }
 
