@@ -108,26 +108,8 @@ function addHeatMapLayer(map) {
         // which field name in your data represents the data value - default "value"
         valueField: 'count'
     });
-    // test data
-    var testData = {
-        max: 8,
-        data: [{
-                lat: 4.637601,
-                lng: -74.150478,
-                count: 8
-            }, {
-                lat: 4.641578,
-                lng: -74.154355,
-                count: 1
-            },
-            {
-                lat: 4.635590,
-                lng: -74.155276,
-                count: 5
-            }
-        ]
-    };
-    heatmap.setData(testData);
+    // cargar valores de seguridad por defecto al inicio
+    getValues('security');
 }
 /**
  * paint the user's location point
