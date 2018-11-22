@@ -30,6 +30,6 @@ var map;
 var heatmap;
 var marker;
 var locationMarker;
-var server = 'localhost';
+var server = '54.39.145.133/valorator';
 var coordinate;
 indicators = ['health', 'security', 'ambient'];
